@@ -50,13 +50,14 @@ ST.startsingle = function() {
 ST.startsimple = function() {
 	$("#simplethreaded .output").empty();
 	ST.simplegen = new ST.SimpleGenerator(ST.n);
+	clearTimeout(ST.simpleThreadID);
 	var fn = function() {
 		var i = 0;
 		while (i++ < ST.s && (ST.simpleD = ST.simplegen.next()) !== null) {
 			$("#simplethreaded .output").append($("<div class='result'/>").text(ST.simpleD));
 		}
 		if (ST.simpleD !== null) {
-			setTimeout(fn,ST.s/10);
+			ST.simpleThreadID = setTimeout(fn,ST.s/10);
 		}
 	};
 	fn();
