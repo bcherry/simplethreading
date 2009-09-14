@@ -40,7 +40,7 @@ var SimpleThread = function(workFn,params) {
 	// Getters/Setters
 	this.getBatchSize	= function()	{ return batchSize; };
 	this.setBatchSize	= function(n)	{ batchSize = n; };
-	this.getInterval	= function()	{ return interval; };
+	this.getInterval	= function()	{ return interval; if (that.isRunning()) { that.stop; that.start();} };
 	this.setInterval	= function(n)	{ interval = n; };
 	this.getWorkFn		= function() 	{ return workFn; };
 	this.setWorkFn		= function(fn)	{ workFn = fn; };
