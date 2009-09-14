@@ -73,12 +73,12 @@ var startsimple = function() {
 		} else {
 			return false;
 		}
+		thread.setInterval(thread.getInterval() + 100);
 		return true;
 	};
 	var thread = new SimpleThread(fn,{
 		workArgs:[gen,context],
 		batchSize:batchSize});
-	thread.start();
 };
 
 

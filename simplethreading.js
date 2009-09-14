@@ -1,10 +1,15 @@
 var SimpleThread = function(workFn,params) {
 	var that = this;
+	var autoStart = (params && params.autoStart !== null) || true;
 	var batchSize = (params && params.batchSize) || 5;
 	var interval = (params && params.interval) || 1;
 	var workArgs = (params && params.workArgs) || [];
 	var workFn = workFn;
 	var threadID = null;
+
+	var log = function(msg) {
+		console.log("SimpleThread #" + threadID + ": " + msg);
+	}
 
 	// Control functions
 	this.start = function() {
@@ -15,11 +20,15 @@ var SimpleThread = function(workFn,params) {
 			}
 		};
 		threadID = setInterval(fn,interval);
+		log("started");
 		return threadID;
 	};
 	this.stop = function() {
-		clearInterval(threadID);
-		threadID = null;
+		if (this.isRunning()) {
+			log("stopped");
+			clearInterval(threadID);
+			threadID = null;
+		}
 	};
 	this.isRunning = function() {
 		return threadID !== null;
@@ -35,5 +44,9 @@ var SimpleThread = function(workFn,params) {
 	this.getWorkArgs	= function()	{ return workArgs; };
 	this.setWorkArgs	= function(args){ workArgs = args; };
 	this.getThreadID	= function()	{ return threadID; };
+
+	if (autoStart) {
+		this.start();
+	}
 };
 
