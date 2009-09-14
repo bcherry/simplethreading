@@ -15,8 +15,11 @@ var SimpleThread = function(workFn,params) {
 	this.start = function() {
 		this.stop();
 		var fn = function() {
-			if (!workFn.apply(window,workArgs)) {
-				that.stop();
+			for (var i = 0; i < batchSize; i++) {
+				if (!workFn.apply(window,workArgs)) {
+					that.stop();
+					break;
+				}
 			}
 		};
 		threadID = setInterval(fn,interval);
