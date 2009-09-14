@@ -54,6 +54,11 @@ h2 {
 	min-width:25px;
 }
 
+.dark {
+	color:#F2F2F2;
+	background-color:#666666;
+}
+
 .tip {
 	font-size:10pt;
 	margin:0 auto 20px;

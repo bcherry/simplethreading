@@ -17,6 +17,17 @@ if (qs.length > 1) {
 	}
 }
 
+ST.functions = [
+	function(n, context) {
+		$(context).append($("<div/>").addClass("result").attr("id","r"+n).text(n));
+	},function(n, context) {
+		$("#r" + n + ".result", context).addClass("dark");
+	},function(n, context){
+		$("#r" + n + ".result", context).remove();
+	}];
+
+/** singlethreaded approach **/
+ST.singleStage = 0;
 ST.SingleGenerator = function(n) {
 	var i = 0;
 	this.next = function() {
@@ -27,6 +38,20 @@ ST.SingleGenerator = function(n) {
 	};
 };
 
+ST.startsingle = function() {
+	var context = $("#singlethreaded .output");
+	var gen = new ST.SingleGenerator(ST.n);
+	var n;
+	var workFn = ST.functions[ST.singleStage];
+	ST.singleStage++;
+	ST.singleStage = ST.singleStage % ST.functions.length;
+	while ((n = gen.next()) !== null) {
+		workFn(n,context);
+	}
+};
+
+/** simplethreaded approach **/
+ST.simpleStage = 0;
 ST.SimpleGenerator = function(n) {
 	var i = 0;
 	this.next = function() {
@@ -37,27 +62,20 @@ ST.SimpleGenerator = function(n) {
 	};
 };
 
-/** singlethreaded approach **/
-ST.startsingle = function() {
-	$("#singlethreaded .output").empty();
-	ST.singlegen = new ST.SingleGenerator(ST.n);
-	while ((ST.singleD = ST.singlegen.next()) !== null) {
-		$("#singlethreaded .output").append($("<div class='result'/>").text(ST.singleD));
-	}
-};
-
-/** simplethreaded approach **/
 ST.startsimple = function() {
-	$("#simplethreaded .output").empty();
-	ST.simplegen = new ST.SimpleGenerator(ST.n);
-	clearTimeout(ST.simpleThreadID);
+	var context = $("#simplethreaded .output");
+	var gen = new ST.SimpleGenerator(ST.n);
+	var n;
+	var workFn = ST.functions[ST.simpleStage];
+	ST.simpleStage++;
+	ST.simpleStage = ST.simpleStage % ST.functions.length;
 	var fn = function() {
 		var i = 0;
-		while (i++ < ST.s && (ST.simpleD = ST.simplegen.next()) !== null) {
-			$("#simplethreaded .output").append($("<div class='result'/>").text(ST.simpleD));
+		while (i++ < ST.s && (n = gen.next()) !== null) {
+			workFn(n,context);
 		}
-		if (ST.simpleD !== null) {
-			ST.simpleThreadID = setTimeout(fn,ST.s/10);
+		if (n !== null) {
+			ST.simpleThreadID = setTimeout(fn,ST.s/10 || 1);
 		}
 	};
 	fn();
