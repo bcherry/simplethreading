@@ -63,20 +63,22 @@ var SimpleGenerator = function(n) {
 var startsimple = function() {
 	var context = $("#simplethreaded .output");
 	var gen = new SimpleGenerator(itemCount);
-	var n;
 	var workFn = functions[simpleStage];
 	simpleStage++;
 	simpleStage = simpleStage % functions.length;
 	var fn = function() {
-		var i = 0;
-		while (i++ < batchSize && (n = gen.next()) !== null) {
+		var n = gen.next()
+		if (n !== null) {
 			workFn(n,context);
+		} else {
+			return false;
 		}
-		if (n === null) {
-			clearInterval(threadID);
-		}
+		return true;
 	};
-	var threadID = setInterval(fn,1);
+	var thread = new SimpleThread(fn,{
+		workArgs:[gen,context],
+		batchSize:batchSize});
+	thread.start();
 };
 
 
