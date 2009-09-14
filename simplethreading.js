@@ -74,11 +74,11 @@ ST.startsimple = function() {
 		while (i++ < ST.s && (n = gen.next()) !== null) {
 			workFn(n,context);
 		}
-		if (n !== null) {
-			ST.simpleThreadID = setTimeout(fn,ST.s/10 || 1);
+		if (n === null) {
+			clearInterval(threadID);
 		}
 	};
-	fn();
+	var threadID = setInterval(fn,1);
 };
 
 
