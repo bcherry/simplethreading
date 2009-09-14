@@ -1,23 +1,21 @@
-var ST = {};
-
-ST.n = 100;
-ST.s = 5;
-ST.singlelimit = 1000;
+var itemCount = 100;
+var batchSize = 5;
+var singlelimit = 1000;
 var qs = window.location.search.split('?');
 if (qs.length > 1) {
 	qs = qs[1].split('&');
 	for (var i = 0; i < qs.length; i++) {
-		var s = qs[i].split('=');
-		if (s.length > 1 && s[0] == 'n') {
-			ST.n = parseInt(s[1]);
+		var x = qs[i].split('=');
+		if (x.length > 1 && x[0] == 'n') {
+			itemCount = parseInt(x[1]);
 		}
-		if (s.length > 1 && s[0] == 's') {
-			ST.s = parseInt(s[1]);
+		if (x.length > 1 && x[0] == 's') {
+			batchSize = parseInt(x[1]);
 		}
 	}
 }
 
-ST.functions = [
+var functions = [
 	function(n, context) {
 		$(context).append($("<div/>").addClass("result").attr("id","r"+n).text(n));
 	},function(n, context) {
@@ -27,32 +25,32 @@ ST.functions = [
 	}];
 
 /** singlethreaded approach **/
-ST.singleStage = 0;
-ST.SingleGenerator = function(n) {
+var singleStage = 0;
+var SingleGenerator = function(n) {
 	var i = 0;
 	this.next = function() {
-		if (i > n || i > ST.singlelimit) {
+		if (i > n || i > singlelimit) {
 			return null;
 		}
 		return i++;
 	};
 };
 
-ST.startsingle = function() {
+var startsingle = function() {
 	var context = $("#singlethreaded .output");
-	var gen = new ST.SingleGenerator(ST.n);
+	var gen = new SingleGenerator(itemCount);
 	var n;
-	var workFn = ST.functions[ST.singleStage];
-	ST.singleStage++;
-	ST.singleStage = ST.singleStage % ST.functions.length;
+	var workFn = functions[singleStage];
+	singleStage++;
+	singleStage = singleStage % functions.length;
 	while ((n = gen.next()) !== null) {
 		workFn(n,context);
 	}
 };
 
 /** simplethreaded approach **/
-ST.simpleStage = 0;
-ST.SimpleGenerator = function(n) {
+var simpleStage = 0;
+var SimpleGenerator = function(n) {
 	var i = 0;
 	this.next = function() {
 		if (i > n) {
@@ -62,16 +60,16 @@ ST.SimpleGenerator = function(n) {
 	};
 };
 
-ST.startsimple = function() {
+var startsimple = function() {
 	var context = $("#simplethreaded .output");
-	var gen = new ST.SimpleGenerator(ST.n);
+	var gen = new SimpleGenerator(itemCount);
 	var n;
-	var workFn = ST.functions[ST.simpleStage];
-	ST.simpleStage++;
-	ST.simpleStage = ST.simpleStage % ST.functions.length;
+	var workFn = functions[simpleStage];
+	simpleStage++;
+	simpleStage = simpleStage % functions.length;
 	var fn = function() {
 		var i = 0;
-		while (i++ < ST.s && (n = gen.next()) !== null) {
+		while (i++ < batchSize && (n = gen.next()) !== null) {
 			workFn(n,context);
 		}
 		if (n === null) {
@@ -83,7 +81,7 @@ ST.startsimple = function() {
 
 
 $(function(){
-	$("#singlethreaded .start").bind('click', ST.startsingle);
-	$("#simplethreaded .start").bind('click', ST.startsimple);
+	$("#singlethreaded .start").bind('click', startsingle);
+	$("#simplethreaded .start").bind('click', startsimple);
 });
 
