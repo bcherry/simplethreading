@@ -5,11 +5,14 @@
 		var batchSize = (params && params.batchSize) || 1;
 		var interval = (params && params.interval) || 1;
 		var workArgs = (params && params.workArgs) || [];
+		var _log = (params && params.log !== null) || true;
 		var workFn = workFn;
 		var threadID = null;
 
 		var log = function(msg) {
-			console.log("SimpleThread #" + threadID + ": " + msg);
+			if (_log) {
+				console.log("SimpleThread #" + threadID + ": " + msg);
+			}
 		}
 
 		// Control functions
