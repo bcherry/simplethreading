@@ -8,6 +8,7 @@
 		var _log = (params && params.log !== null) || true;
 		var workFn = workFn;
 		var threadID = null;
+		var _callee = arguments.callee;
 
 		var log = function(msg) {
 			if (_log) {
@@ -22,7 +23,7 @@
 			var fn = function() {
 				var keepGoing = true;
 				for (var i = 0; i < batchSize; i++) {
-					if (!workFn.apply(window,workArgs)) {
+					if (!workFn.apply(_callee,workArgs)) {
 						that.stop();
 						keepGoing = false;
 						break;

@@ -1,11 +1,15 @@
 var itemCount = 100;
+var batchSize = 100;
 var qs = window.location.search.split('?');
 if (qs.length > 1) {
 	qs = qs[1].split('&');
 	for (var i = 0; i < qs.length; i++) {
 		var x = qs[i].split('=');
 		if (x.length > 1 && x[0] == 'n') {
-			itemCount = parseInt(x[1]);
+			itemCount = parseInt(x[1], 10);
+		}
+		if (x.length > 1 && x[0] == 's') {
+			batchSize = parseInt(x[1], 10);
 		}
 	}
 }
@@ -44,21 +48,47 @@ var startjQuery = function() {
 		return true;
 	};
 	var thread = new SimpleThread(fn,{
-		workArgs:[gen,context]});
+		workArgs:[gen,context],
+		batchSize:batchSize});
 };
 
 var domFunctions = [
-	function(n, root) {
-		var div = document.createElement("div");
-		div.appendChild(document.createTextNode(n));
-		div.className = 'result';
-		div.class = 'result';
-		div.id = 'domr' + n;
-		root.appendChild(div);
-	},function(n, context) {
-		document.getElementById('domr' + n).className = 'result dark';
-	},function(n, context){
-		$("#domr" + n + ".result", context).remove();
+	function build(gen,root) {
+		var i = 0;
+		for (var n = gen.next(); n !== null && i < batchSize; n = gen.next()) {
+			var div = document.createElement("div");
+			div.appendChild(document.createTextNode(n));
+			div.className = 'result';
+			div.class = 'result';
+			div.id = 'domr' + n;
+			root.appendChild(div);
+			i++;
+		}
+		if (n === null) {
+			return false;
+		}
+		return true;
+	},function(gen, root) {
+		var i = 0;
+		for (var n = gen.next(); n !== null && i < batchSize; n = gen.next()) {
+			document.getElementById('domr' + n).className = 'result dark';
+			i++;
+		}
+		if (n === null) {
+			return false;
+		}
+		return true;
+	},function(gen, root){
+		var i = 0;
+		for (var n = gen.next(); n !== null && i < batchSize; n = gen.next()) {
+			var div = document.getElementById('domr' + n);
+			div.parentNode.removeChild(div);
+			i++;
+		}
+		if (n === null) {
+			return false;
+		}
+		return true;
 	}];
 var domStage = 0;
 var DomGenerator = function(n) {
@@ -76,18 +106,9 @@ var startDom = function() {
 	var workFn = domFunctions[domStage];
 	domStage++;
 	domStage = domStage % domFunctions.length;
-	var fn = function() {
-		var n = gen.next()
-		if (n !== null) {
-			workFn(n,root);
-		} else {
-			return false;
-		}
-		return true;
-	};
-	var thread = new SimpleThread(fn,{
+	var thread = new SimpleThread(workFn,{
 		workArgs:[gen,root],
-		batchSize:500});
+		batchSize:1});
 };
 
 $(function(){
