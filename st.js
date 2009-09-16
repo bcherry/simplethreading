@@ -55,15 +55,17 @@ var startjQuery = function() {
 var domFunctions = [
 	function build(gen,root) {
 		var i = 0;
+		var outerDiv = document.createElement("div");
 		for (var n = gen.next(); n !== null && i < batchSize; n = gen.next()) {
 			var div = document.createElement("div");
 			div.appendChild(document.createTextNode(n));
 			div.className = 'result';
 			div.class = 'result';
 			div.id = 'domr' + n;
-			root.appendChild(div);
+			outerDiv.appendChild(div);
 			i++;
 		}
+		root.appendChild(outerDiv);
 		if (n === null) {
 			return false;
 		}
@@ -71,7 +73,8 @@ var domFunctions = [
 	},function(gen, root) {
 		var i = 0;
 		for (var n = gen.next(); n !== null && i < batchSize; n = gen.next()) {
-			document.getElementById('domr' + n).className = 'result dark';
+			$('#domr' + n).addClass("dark");
+			//document.getElementById('domr' + n).className = 'result dark';
 			i++;
 		}
 		if (n === null) {
