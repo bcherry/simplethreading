@@ -20,7 +20,7 @@
 				var keepGoing = true;
 				for (var i = 0; i < batchSize; i++) {
 					if (!workFn.apply(window,workArgs)) {
-						stop();
+						that.stop();
 						keepGoing = false;
 						break;
 					}
