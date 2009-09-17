@@ -14,10 +14,16 @@ var startAnimation = function() {
 		"left":"0",
 		"top":"0",
 		"cursor":"pointer"
-	}).click(function(){target.parent().remove();thread.stop();});
+	}).click(function(){
+		if (thread.isRunning()) {
+			thread.stop();
+		} else {
+			thread.start();
+		}
+	});
 	div.append(target);
 	root.append(div);
-	var delta = 5;
+	var delta = 2;
 	var fn = function() {
 		var left = target.position().left;
 		if (left > 170 || left < 0) {
