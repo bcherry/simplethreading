@@ -54,8 +54,10 @@
 
 		// Control functions
 		this.start = function() {
-			threadID = threadManager.add(this);
-			log("started");
+			if (!this.isRunning()) {
+				threadID = threadManager.add(this);
+				log("started");
+			}
 		};
 		this.stop = function(skipThreadManager) {
 			if (!skipThreadManager) {
