@@ -1,7 +1,4 @@
 (function(){
-	var log = function(msg) {
-		console.log("SimpleThreading: ");
-	};
 	var threadManager = {
 		seed: 0,
 		current: 0,

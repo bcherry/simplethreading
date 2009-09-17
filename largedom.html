@@ -6,14 +6,13 @@
 </head>
 <body>
 	<h1>simplethreading: javascript pseudo-threads</h1>
+	<div class="tip">demo creating/modifying/deleting 30,000 DOM elements</div>
 	<div id="simplethreading" class="clearfix">
 		<div class="preloader"><img src="ajax-loader.gif"/></div>
-		<div class="tip">click the headers below to get started, and watch the spinner</div>
-		<div id="basic-animation" class="demo clearfix">
-			<h2 class="start">basic animation</h2>
-			<div class="output clearfix">
-				<div id="target" />
-			</div>
+		<div class="tip">click the header below to get started, and watch the spinner</div>
+		<div id="large-dom" class="demo clearfix">
+			<h2 class="start">large dom</h2>
+			<div class="output clearfix"></div>
 		</div>
 	</div>
 	<div class="footer">an experiment by <a href="http://bcherry.net">ben cherry</a></div>
@@ -23,7 +22,8 @@
 		$LAB
 		.script("simplethreading.js")
 		.block()
-		.script("demo.js")
+		.script("largedom.js")
 	</script>
 </body>
 </html>
+
