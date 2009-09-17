@@ -40,7 +40,6 @@
 	this.SimpleThread = function(workFn,params) {
 		var that = this;
 		var autoStart = (params && params.autoStart !== null) || true;
-		var interval = (params && params.interval) || 1;
 		var workArgs = (params && params.workArgs) || [];
 		var _log = (params && params.log !== null) || true;
 		var workFn = workFn;
@@ -77,8 +76,6 @@
 		// Getters/Setters
 		this.getBatchSize	= function()	{ return batchSize; };
 		this.setBatchSize	= function(n)	{ batchSize = n; };
-		this.getInterval	= function()	{ return interval; if (that.isRunning()) { that.stop; that.start();} };
-		this.setInterval	= function(n)	{ interval = n; };
 		this.getWorkFn		= function() 	{ return workFn; };
 		this.setWorkFn		= function(fn)	{ workFn = fn; };
 		this.getWorkArgs	= function()	{ return workArgs; };
